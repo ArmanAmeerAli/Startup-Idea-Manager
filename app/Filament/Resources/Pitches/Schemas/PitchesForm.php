@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\Pitches\Schemas;
 
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Schema;
-use App\Filament\Resources\Pitches\Pages\ViewPitches;
 use App\Filament\Resources\Pitches\Pages\EditPitches;
+use App\Filament\Resources\Pitches\Pages\ViewPitches;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Ideas;
 
 class PitchesForm
 {
@@ -16,8 +19,14 @@ class PitchesForm
         return $schema
             ->components([
                 Select::make('idea_id')
-                    ->label('Related Idea')
-                    ->relationship('idea', 'title')
+                    ->label('Idea')
+                    ->options(fn () => Ideas::query()
+                        ->where('user_id', Auth::id())
+                        ->orderBy('title', 'asc')
+                        ->pluck('title', 'id'))
+                    ->searchable()
+                    ->preload()
+                    ->native(false)
                     ->required(),
                 TextInput::make('pitch_title')
                     ->label('Pitch Title')

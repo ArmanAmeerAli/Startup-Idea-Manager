@@ -15,12 +15,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class ValidationsResource extends Resource
 {
     protected static ?string $model = Validations::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCheckBadge;
 
     public static function form(Schema $schema): Schema
     {
@@ -52,5 +54,18 @@ class ValidationsResource extends Resource
             // 'view' => ViewValidations::route('/{record}'),
             // 'edit' => EditValidations::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationIcon(): string
+    {
+        return 'heroicon-o-check-badge';
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->whereHas('idea', function (Builder $query) {
+                $query->where('user_id', Auth::id());
+            });
     }
 }

@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\Validations\Schemas;
 
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Schema;
-use App\Filament\Resources\Validations\Pages\ViewValidations;
 use App\Filament\Resources\Validations\Pages\EditValidations;
+use App\Filament\Resources\Validations\Pages\ViewValidations;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Ideas;
 
 class ValidationsForm
 {
@@ -17,7 +19,13 @@ class ValidationsForm
             ->components([
                 Select::make('idea_id')
                     ->label('Idea')
-                    ->relationship('idea', 'title')
+                    ->options(fn () => Ideas::query()
+                        ->where('user_id', Auth::id())
+                        ->orderBy('title', 'asc')
+                        ->pluck('title', 'id'))
+                    ->searchable()
+                    ->preload()
+                    ->native(false)
                     ->required(),
                 TextInput::make('ai_model')
                     ->label('AI Model')

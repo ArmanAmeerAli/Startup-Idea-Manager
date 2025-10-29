@@ -15,12 +15,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class PitchesResource extends Resource
 {
     protected static ?string $model = Pitches::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMegaphone;
 
     public static function form(Schema $schema): Schema
     {
@@ -52,5 +54,18 @@ class PitchesResource extends Resource
             // 'view' => ViewPitches::route('/{record}'),
             // 'edit' => EditPitches::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationIcon(): string
+    {
+        return 'heroicon-o-megaphone';
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->whereHas('idea', function (Builder $query) {
+                $query->where('user_id', Auth::id());
+            });
     }
 }
