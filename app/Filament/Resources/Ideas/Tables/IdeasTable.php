@@ -20,10 +20,6 @@ class IdeasTable
                     ->label('Title')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('description')
-                    ->label('Description')
-                    ->searchable()
-                    ->sortable(),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
