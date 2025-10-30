@@ -17,6 +17,8 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use App\Filament\Resources\Ideas\RelationManagers\PitchesRelationManager;
+use App\Filament\Resources\Ideas\RelationManagers\ValidationRelationManager;
 
 class IdeasResource extends Resource
 {
@@ -44,7 +46,8 @@ class IdeasResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PitchesRelationManager::class,
+            ValidationRelationManager::class,
         ];
     }
 
