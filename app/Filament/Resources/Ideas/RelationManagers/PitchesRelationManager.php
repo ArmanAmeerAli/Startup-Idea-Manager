@@ -13,6 +13,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use App\Filament\Resources\Pitches\Pages\EditPitches;
+use App\Filament\Resources\Pitches\Pages\ViewPitches;
 
 class PitchesRelationManager extends RelationManager
 {
@@ -31,7 +33,7 @@ class PitchesRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
-                        $data['idea_id'] = $this->getRecord()->id;
+                        $data['idea_id'] = $this->getOwnerRecord()->id;
                         return $data;
                     }),
             ])
@@ -40,19 +42,23 @@ class PitchesRelationManager extends RelationManager
                     ->label('Pitch Title')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('pitch_points')
-                    ->label('Pitch Points')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('pitch_text')
-                    ->label('Pitch Text')
-                    ->searchable()
-                    ->sortable(),
+                // TextColumn::make('pitch_points')
+                //     ->label('Pitch Points')
+                //     ->searchable()
+                //     ->sortable(),
+                // TextColumn::make('pitch_text')
+                //     ->label('Pitch Text')
+                //     ->searchable()
+                //     ->sortable(),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->disabled()
+                    ->date('Y-m-d'),
             ])
             ->actions([
                 ViewAction::make(),
@@ -71,23 +77,24 @@ class PitchesRelationManager extends RelationManager
                     ->maxLength(255),
                 TextInput::make('pitch_points')
                     ->label('Pitch Points')
-                    ->rows(2)
                     ->required()
                     ->maxLength(255),
                 TextInput::make('pitch_text')
                     ->label('Pitch')
-                    ->rows(5)
                     ->required()
                     ->maxLength(255),
                 Select::make('status')
                     ->label('Status')
                     ->required()
+                    ->disabled()
                     ->options([
                         'draft' => 'Draft',
                         'generated' => 'Generated',
+                        'approved' => 'Approved',
                         'published' => 'Published',
                     ])
-                    ->default('draft'),
+                    ->default('draft')
+                    ->visible(fn($get, $livewire) => ($livewire instanceof ViewPitches || $livewire instanceof EditPitches)),
             ]);
     }
 }

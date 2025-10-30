@@ -14,6 +14,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use App\Filament\Resources\Validations\Pages\EditValidations;
+use App\Filament\Resources\Validations\Pages\ViewValidations;
 
 class ValidationRelationManager extends RelationManager
 {
@@ -30,13 +32,13 @@ class ValidationRelationManager extends RelationManager
     {
         return $table
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->mutateFormDataUsing(function (array $data): array {
+                        $data['idea_id'] = $this->getOwnerRecord()->id;
+                        return $data;
+                    }),
             ])
             ->columns([
-                TextColumn::make('idea.title')
-                    ->label('Idea')
-                    ->searchable()
-                    ->sortable(),
                 TextColumn::make('ai_score')
                     ->label('Score')
                     ->searchable()
@@ -73,19 +75,35 @@ class ValidationRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                TextInput::make('score')
+                TextInput::make('ai_model')
+                    ->label('AI Model')
+                    ->default('-')
+                    ->maxLength(255)
+                    ->required(),
+                TextInput::make('ai_score')
+                    ->label('AI Score')
                     ->numeric()
                     ->minValue(0)
                     ->maxValue(100)
-                    ->label('Score'),
-
-                Textarea::make('feedback')
-                    ->label('Feedback')
-                    ->rows(3),
-
-                Textarea::make('suggestions')
-                    ->label('Suggestions')
-                    ->rows(3),
+                    ->nullable(),
+                Textarea::make('ai_feedback')
+                    ->label('AI Feedback')
+                    ->rows(3)
+                    ->nullable(),
+                Textarea::make('ai_suggestions')
+                    ->label('AI Suggestions')
+                    ->rows(3)
+                    ->nullable(),
+                Select::make('status')
+                    ->label('Status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'approved' => 'Approved',
+                        'rejected' => 'Rejected',
+                    ])
+                    ->default('pending')
+                    ->disabled()
+                    ->visible(fn($get, $livewire) => ($livewire instanceof ViewValidations || $livewire instanceof EditValidations)),
             ]);
     }
 }

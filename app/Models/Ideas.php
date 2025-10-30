@@ -24,13 +24,13 @@ class Ideas extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function validations()
+    public function validation()
     {
-        return $this->hasMany(Validations::class);
+        return $this->hasMany(Validations::class, 'idea_id');
     }
 
     public function pitches()
     {
-        return $this->hasMany(Pitches::class);
+        return $this->hasMany(Pitches::class, 'idea_id');
     }
 }

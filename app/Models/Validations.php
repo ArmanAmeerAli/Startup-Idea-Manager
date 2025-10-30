@@ -19,11 +19,11 @@ class Validations extends Model
 
     public function idea()
     {
-        return $this->belongsTo(Ideas::class);
+        return $this->belongsTo(Ideas::class,'idea_id');
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
 }
