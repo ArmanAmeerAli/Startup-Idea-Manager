@@ -27,6 +27,7 @@ class IdeasForm
                     ->label('Status')
                     ->options([
                         'Pending' => 'Pending',
+                        'Processing' => 'Processing',
                         'Validated' => 'Validated',
                         'Rejected' => 'Rejected',
                     ])
