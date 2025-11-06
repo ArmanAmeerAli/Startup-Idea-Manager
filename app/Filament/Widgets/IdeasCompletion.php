@@ -29,6 +29,24 @@ class IdeasCompletion extends ChartWidget
         $processing = Ideas::where('user_id', $user->id)->where('status', 'processing')->count();
         $completed = Ideas::where('user_id', $user->id)->where('status', 'completed')->count();
         $rejected = Ideas::where('user_id', $user->id)->where('status', 'rejected')->count();
+
+        $totalIdeas = $pending + $processing + $completed + $rejected;
+
+        if ($totalIdeas === 0) {
+            // Return empty data with a message
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'No ideas found',
+                        'data' => [1],
+                        'backgroundColor' => ['#E5E7EB'],
+                        'borderColor' => ['#9CA3AF'],
+                        'borderWidth' => 1,
+                    ],
+                ],
+                'labels' => ['No data available'],
+            ];
+        }
         return [
             'datasets' => [
                 [
