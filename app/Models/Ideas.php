@@ -33,4 +33,8 @@ class Ideas extends Model
     {
         return $this->hasMany(Pitches::class, 'idea_id');
     }
+
+    protected $casts = [
+        'category' => 'array',
+    ];
 }

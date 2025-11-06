@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\Ideas\Schemas;
 
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use App\Filament\Resources\Ideas\Pages\ViewIdeas;
 use App\Filament\Resources\Ideas\Pages\EditIdeas;
+use Illuminate\Support\Facades\DB;
 
 class IdeasForm
 {
@@ -21,8 +23,24 @@ class IdeasForm
                 Textarea::make('description')
                     ->required()
                     ->rows(4),
-                TextInput::make('category')
-                    ->maxLength(255),
+                //i want to pick existing category from the database, which are already registered in the database
+                //i dont have its model, i just want to pick it from the database
+                TagsInput::make('category')
+                    ->label('Category')
+                    ->suggestions(
+                        collect(
+                            DB::table('ideas')
+                                ->whereNotNull('category')
+                                ->pluck('category')   // returns JSON arrays
+                        )
+                            ->flatMap(fn($item) => json_decode($item, true)) // expand arrays
+                            ->filter()                                         // remove nulls
+                            ->unique()                                         // remove duplicates
+                            ->values()                                         // reset keys
+                            ->toArray()
+                    )
+                    ->placeholder('Type or Choose Category')
+                    ->required(),
                 Select::make('status')
                     ->label('Status')
                     ->options([
