@@ -36,6 +36,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Startup Idea Manager')
             ->login()
             ->registration()
+            ->databaseNotifications()
             ->passwordReset()
             ->topNavigation()
             ->colors([
